@@ -1,9 +1,20 @@
 from pico2d import *
+import random
 import game_framework
 import title_state
 
 kabi = None
 background = None
+cloud = None
+
+class Cloud:
+    image = None
+    def __init__(self):
+        self.x, self.y = random.randint(100, 700), random.randint(0, 600)
+        if Cloud.image == None:
+            Cloud.image = load_image('cloud_one.png')
+    def draw(self):
+        self.image.draw(self.x, self.y)
 
 class BackGround:
     global kabi
@@ -26,9 +37,6 @@ class BackGround:
         self.background_one.draw(0, self.y1)
         self.background_two.draw(0, self.y2)
 
-
-
-
 class Kabi:
 
     STAND_STATE, WALK_STATE, JUMP_STATE, FLY_STATE, FALL_STATE = 0, 1, 2, 3, 4
@@ -38,12 +46,7 @@ class Kabi:
         pass
 
     def handle_walk(self):
-        if(self.direction_left_state == True):
-            if(self.x > 0):
-                self.x -= 10
-        elif(self.direction_right_state == True):
-            if(self.x < 800):
-                self.x += 10
+        pass
 
     def handle_jump(self):
         self.y += self.jump_direction
@@ -57,12 +60,6 @@ class Kabi:
                 self.act_state = self.WALK_STATE
 
     def handle_fly(self):
-        if(self.direction_left_state == True):
-            if(self.x > 0):
-                self.x -= 10
-        elif(self.direction_right_state == True):
-            if(self.x < 800):
-                self.x += 10
         if(self.direction_up_state == True and self.y < 400):
             self.y += 10
         elif(self.direction_down_state == True):
@@ -118,12 +115,12 @@ class Kabi:
         self.jump_frame = (self.jump_frame + 1) % 8
         self.fly_frame = (self.fly_frame + 1) % 7
 
-        # if(self.direction_left_state == True):
-        #     if(self.x > 0):
-        #         self.x -= 10
-        # elif(self.direction_right_state == True):
-        #     if(self.x < 800):
-        #         self.x += 10
+        if(self.direction_left_state == True):
+            if(self.x > 0):
+                self.x -= 10
+        elif(self.direction_right_state == True):
+            if(self.x < 800):
+                self.x += 10
         # if(self.direction_up_state == True):
         #     self.y += 10
         # elif(self.direction_down_state == True):
@@ -212,14 +209,18 @@ def handle_events():
 def enter():
     global kabi
     global background
+    global cloud
     kabi = Kabi()
     background = BackGround()
+    cloud = Cloud()
 
 def exit():
     global kabi
     global background
+    global cloud
     del(kabi)
     del(background)
+    del(cloud)
 
 def update():
     background.update()
@@ -229,6 +230,7 @@ def update():
 def draw():
     clear_canvas()
     background.draw()
+    cloud.draw()
     kabi.draw()
     update_canvas()
 
