@@ -9,7 +9,7 @@ image = None
 
 def enter():
     global image
-    image = load_image('kabi_title.png')
+    image = load_image('resource\\kabi_title.png')
 
 
 def exit():
