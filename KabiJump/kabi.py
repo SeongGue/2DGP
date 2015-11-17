@@ -1,101 +1,74 @@
 from pico2d import *
-import random
-import game_framework
-import title_state
 
-kabi = None
-background = None
-cloud = None
-cloud_num = None
+class Kabi:
+    PIXEL_PER_METER = (10.0 / 0.3)           # 10 pixel 30 cm
+    RUN_SPEED_KMPH = 20.0                    # Km / Hour
+    RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
+    RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
+    RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 
-KABI_COL, KABI_ROW = 25, 25
-CLOUD_COL, CLOUD_ROW = 68, 36
+    TIME_PER_ACTION = 1.0
+    ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+    WALK_FRAMES_PER_ACTION = 10
+    JUMP_FRAMES_PER_ACTION = 8
+    FLY_FRAMES_PER_ACTION = 7
 
-class Cloud:
-    bot_image = None
-    mid_imgae = None
-    top_image = None
-    def __init__(self):
-        self.bot_image_x, self.bot_image_y = random.randint(150, 300), random.randint(100, 200)
-        self.mid_image_x, self.mid_image_y = random.randint(450, 650), random.randint(300, 400)
-        self.top_image_x, self.top_image_y = random.randint(150, 300), random.randint(500, 600)
-        #if Cloud.image == None:
-        Cloud.bot_image = load_image('resource\\cloud_one.png')
-        Cloud.mid_image = load_image('resource\\cloud_one.png')
-        Cloud.top_image = load_image('resource\\cloud_one.png')
-    def draw(self):
-        self.bot_image.draw(self.bot_image_x, self.bot_image_y)
-        self.mid_image.draw(self.mid_image_x, self.mid_image_y)
-        self.top_image.draw(self.top_image_x, self.top_image_y)
+    JUMP_SPEED_KMPH = 40.0
+    JUMP_SPEED_MPM = (JUMP_SPEED_KMPH * 1000.0 / 60.0)
+    JUMP_SPEED_MPS = (JUMP_SPEED_MPM / 60.0)
+    JUMP_SPEED_PPS = (JUMP_SPEED_MPS * PIXEL_PER_METER)
 
-class BackGround:
-    global kabi
-    def __init__(self):
-        self.background_one = load_image('resource\\background_one.png')
-        self.background_two = load_image('resource\\background_two.png')
-        self.floor = load_image('resource\\grass.png')
-        self.y1 = 536
-        self.y2 = 1602
+    GRAVITY_SPEED_KMPH = 100.0
+    GRAVITY_SPEED_MPM = (GRAVITY_SPEED_KMPH * 1000.0 / 60.0)
+    GRAVITY_SPEED_MPS = (GRAVITY_SPEED_MPM / 60.0)
+    GRAVITY_SPEED_PPS = (GRAVITY_SPEED_MPS * PIXEL_PER_METER)
 
-    def update(self):
-        if(kabi.y >300 and kabi.up_down_state == kabi.UP):
-            self.y1 -= 10
-            self.y2 -= 10
-        if(self.y1 < -600):
-            self.y1 = 1506
-        elif(self.y2 < -500):
-            self.y2 = 1602
+    FALL_SPEED_KMPH = 10
+    FALL_SPEED_MPM = (FALL_SPEED_KMPH * 1000.0 / 60.0)
+    FALL_SPEED_MPS = (FALL_SPEED_MPM / 60.0)
+    FALL_SPEED_PPS = (FALL_SPEED_MPS * PIXEL_PER_METER)
 
-    def draw(self):
-        self.background_one.draw(0, self.y1)
-        self.background_two.draw(0, self.y2)
-        self.floor.draw(400,0)
-
-class Kabi(Cloud):
     STAND_STATE, WALK_STATE, JUMP_STATE, FLY_STATE, FALL_STATE  = 0, 1, 2, 3, 4
-    LEFT, RIGHT, UP, DOWN, STOP = 0, 1, 2, 3, 4
-    JUMP_POWER, GRAVITY = 40, 10
+    LEFT, STOP, RIGHT = -1, 0, 1
+    DOWN, STOP ,UP= -1, 0, 1
     START_Y = 30
 
-    def collision(self):
-        if(kabi.self.x + KABI_COL >= Cloud.self.x - CLOUD_COL and kabi.self.x - KABI_COL <= Cloud.self.x + CLOUD_COL and kabi.self.y - KABI_ROW <= Cloud.self.y + CLOUD_ROW and kabi.self.y + KABI_ROW >= Cloud.self.y - CLOUD_ROW):
-            return False
-        else:
-            True
+    KABI_BOX = 20
 
-    def handle_stand(self):
-        if collison(self)
-
-    def handle_walk(self):
+    def handle_stand(self, frame_time):
         pass
 
-    def handle_jump(self):
-        self.y += self.jump_power
+    def handle_walk(self, frame_time):
+        pass
+
+    def handle_jump(self, frame_time):
+        self.y += self.jump_power * frame_time
         if(self.y > self.START_Y):
-            self.jump_power -= self.gravity
+            self.jump_power -= self.gravity * frame_time
         elif(self.y < self.START_Y):
-            self.jump_power = self.JUMP_POWER
+            self.jump_power = Kabi.JUMP_SPEED_PPS
             self.y = self.START_Y
             self.act_state = self. STAND_STATE
             if self.direction_state in (self.LEFT, self.RIGHT):
                 self.act_state = self.WALK_STATE
 
-    def handle_fly(self):
-        self.jump_power = self.JUMP_POWER
-        self.gravity = self.GRAVITY
-        if(self.up_down_state == self.UP):
-            if self.y < 400:
-                self.y += 10
-        elif(self.up_down_state == self.DOWN):
-            self.y -= 10
+    def handle_fly(self, frame_time):
+        self.fall_speed = Kabi.FALL_SPEED_PPS
+        self.jump_power = self.JUMP_SPEED_PPS
+        self.gravity = self.GRAVITY_SPEED_PPS
+        distance = Kabi.RUN_SPEED_PPS * frame_time
 
-    def handle_fall(self):
-        self.y -= self.gravity
+        self.y += (self.up_down_state * distance)
+
+
+    def handle_fall(self, frame_time):
+        self.y -= self.fall_speed * frame_time
+
         if(self.y > self.START_Y):
-             self.gravity += self.GRAVITY
+                self.fall_speed += self.GRAVITY_SPEED_PPS * frame_time
+
         elif(self.y < self.START_Y):
-            self.gravity = self.GRAVITY
-            self.jump_direction = self.GRAVITY
+            self.fall_speed = Kabi.FALL_SPEED_PPS
             self.y = self.START_Y
             self.act_state = self.STAND_STATE
             if self.direction_state in (self.LEFT, self.RIGHT):
@@ -119,9 +92,14 @@ class Kabi(Cloud):
         self.jump_frame = 0
         self.fly_frame = 0
 
+        self.walk_total_frames = 0.0
+        self.jump_total_frames = 0.0
+        self.fly_total_frames = 0.0
+
         self.x, self.y = 400, self.START_Y
-        self.jump_power = self.JUMP_POWER
-        self.gravity = 10
+        self.jump_power = Kabi.JUMP_SPEED_PPS
+        self.gravity = Kabi.GRAVITY_SPEED_PPS
+        self.fall_speed = Kabi.FALL_SPEED_PPS
 
     handle_state = {
         STAND_STATE : handle_stand,
@@ -136,13 +114,13 @@ class Kabi(Cloud):
             self.save_direction = self.LEFT
             self.direction_state = self.LEFT
             if self.act_state in (self.STAND_STATE, self.WALK_STATE):
-                kabi.act_state = kabi.WALK_STATE
+                self.act_state = self.WALK_STATE
 
         elif(event.type, event.key) == (SDL_KEYDOWN, SDLK_RIGHT):
             self.save_direction = self.RIGHT
             self.direction_state = self.RIGHT
             if self.act_state in (self.STAND_STATE, self.WALK_STATE):
-                kabi.act_state = kabi.WALK_STATE
+                self.act_state = self.WALK_STATE
 
         elif(event.type, event.key) == (SDL_KEYUP, SDLK_LEFT):
             if(self.direction_state == self.LEFT):
@@ -158,13 +136,13 @@ class Kabi(Cloud):
 
         elif(event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
             if self.act_state in (self.JUMP_STATE, self.FALL_STATE):
-                kabi.act_state = kabi.FLY_STATE
+                self.act_state = self.FLY_STATE
             else:
                 self.act_state = self.JUMP_STATE
 
         elif(event.type, event.key) == (SDL_KEYUP, SDLK_SPACE):
             if self.act_state == self.FLY_STATE:
-                self.act_state = kabi.FALL_STATE
+                self.act_state = self.FALL_STATE
 
         elif(event.type, event.key) == (SDL_KEYDOWN, SDLK_UP):
             if self.act_state == self.FLY_STATE:
@@ -182,19 +160,25 @@ class Kabi(Cloud):
             if self.up_down_state == self.DOWN:
                 self.up_down_state = self.STOP
 
-    def update(self):
-        self.walk_frame = frame = (self.walk_frame + 1) % 10
-        self.jump_frame = (self.jump_frame + 1) % 8
-        self.fly_frame = (self.fly_frame + 1) % 7
+    def update(self, frame_time):
+        def clamp(minimum, x, maximum):
+            return max(minimum, min(x, maximum))
 
-        if(self.direction_state == self.LEFT):
-            if(self.x > 0):
-                self.x -= 10
-        elif(self.direction_state == self.RIGHT):
-            if(self.x < 800):
-                self.x += 10
+        distance = Kabi.RUN_SPEED_PPS * frame_time
 
-        self.handle_state[self.act_state](self)
+        self.walk_total_frames += Kabi.WALK_FRAMES_PER_ACTION * Kabi.ACTION_PER_TIME * frame_time
+        self.jump_total_frames += Kabi.JUMP_FRAMES_PER_ACTION * Kabi.ACTION_PER_TIME * frame_time
+        self.fly_total_frames += Kabi.FLY_FRAMES_PER_ACTION * Kabi.ACTION_PER_TIME * frame_time
+
+        self.walk_frame = int(self.walk_total_frames) % 10
+        self.jump_frame = int(self.jump_total_frames) % 8
+        self.fly_frame = int(self.fly_total_frames) % 7
+
+        self.x += (self.direction_state * distance)
+
+        self.x = clamp(0, self.x, 800)
+
+        self.handle_state[self.act_state](self, frame_time)
 
     def draw(self):
         if(self.save_direction == self.LEFT):
@@ -221,45 +205,9 @@ class Kabi(Cloud):
             elif(self.act_state == self.FALL_STATE):
                 self.right_walk.clip_draw(512, 0, 51, 50, self.x, self.y)
 
-def handle_events():
-    global kabi
-    events = get_events()
-    for event in events:
-        if event.type == SDL_QUIT:
-            game_framework.quit()
-        elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_ESCAPE):
-            game_framework.change_state(title_state)
-        else:
-            kabi.handle_event(event)
-
-def enter():
-    global kabi
-    global background
-    #global cloud_num
-    global  cloud
-    kabi = Kabi()
-    background = BackGround()
-    cloud = Cloud()
-    #cloud_num = [Cloud() for i in range(10)]
-
-def exit():
-    global kabi
-    global background
-    del(kabi)
-    del(background)
-    #for cloud in cloud_num:
-    del(cloud)
-
-def update():
-    background.update()
-    kabi.update()
-    delay(0.1)
-
-def draw():
-    clear_canvas()
-    background.draw()
-   # for cloud in cloud_num:
-    cloud.draw()
-    kabi.draw()
-    update_canvas()
-
+    def draw_bb(self):
+        draw_rectangle(*self.get_bb())
+    def get_bb(self):
+        return self.x - Kabi.KABI_BOX, self.y - Kabi.KABI_BOX, self.x + Kabi.KABI_BOX, self.y + Kabi.KABI_BOX
+    def stop(self):
+        pass

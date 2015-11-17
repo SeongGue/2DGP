@@ -1,5 +1,5 @@
 import game_framework
-import main_state
+import collision
 from pico2d import *
 
 
