@@ -3,28 +3,28 @@ import random
 from pico2d import *
 
 class Cloud:
-    # bot_image = None
-    # mid_imgae = None
-    # top_image = None
+    PIXEL_PER_METER = (10.0 / 0.3)           # 10 pixel 30 cm
+    SCROLL_SPEED_KMPH = 5.0                    # Km / Hour
+    SCROLL_SPEED_MPM = (SCROLL_SPEED_KMPH * 1000.0 / 60.0)
+    SCROLL_SPEED_MPS = (SCROLL_SPEED_MPM / 60.0)
+    SCROLL_SPEED_PPS = (SCROLL_SPEED_MPS * PIXEL_PER_METER)
+
     image = None
 
     CLOUD_ROW, CLOUD_COL = 120, 70
     def __init__(self):
-        # self.bot_image_x, self.bot_image_y = random.randint(150, 300), random.randint(100, 200)
-        # self.mid_image_x, self.mid_image_y = random.randint(450, 650), random.randint(300, 400)
-        # self.top_image_x, self.top_image_y = random.randint(150, 300), random.randint(500, 600)
-
+        self.cloud_speed = 0
         self.x, self.y = random.randint(200, 730), random.randint(100, 600)
-        # Cloud.bot_image = load_image('resource\\cloud_one.png')
-        # Cloud.mid_image = load_image('resource\\cloud_one.png')
-        # Cloud.top_image = load_image('resource\\cloud_one.png')
         if Cloud.image == None:
             Cloud.image = load_image('resource\\cloud_one.png')
 
+    def update(self, frame_time):
+        self.cloud_speed = Cloud.SCROLL_SPEED_PPS
+        self.y -= self.cloud_speed * frame_time
+        if(self.y < 0):
+            self.x, self.y = random.randint(200, 730), random.randint(700, 1200)
+
     def draw(self):
-        # self.bot_image.draw(self.bot_image_x, self.bot_image_y)
-        # self.mid_image.draw(self.mid_image_x, self.mid_image_y)
-        # self.top_image.draw(self.top_image_x, self.top_image_y)
         self.image.draw(self.x, self.y)
 
     def draw_bb(self):
