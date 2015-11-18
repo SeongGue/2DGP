@@ -8,7 +8,7 @@ class Cloud:
     # top_image = None
     image = None
 
-    CLOUD_ROW, CLOUD_COL = 136, 72
+    CLOUD_ROW, CLOUD_COL = 120, 70
     def __init__(self):
         # self.bot_image_x, self.bot_image_y = random.randint(150, 300), random.randint(100, 200)
         # self.mid_image_x, self.mid_image_y = random.randint(450, 650), random.randint(300, 400)
@@ -31,4 +31,4 @@ class Cloud:
         draw_rectangle(*self.get_bb())
 
     def get_bb(self):
-        return self.x - Cloud.CLOUD_ROW / 2, self.y - Cloud.CLOUD_COL / 2 , self.x + Cloud.CLOUD_ROW / 2, self.y + Cloud.CLOUD_COL / 2 - 25
+        return self.x - Cloud.CLOUD_ROW / 2, self.y - Cloud.CLOUD_COL / 2 , self.x + Cloud.CLOUD_ROW / 2, self.y

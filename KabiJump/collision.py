@@ -23,7 +23,7 @@ def create_world():
     balls = [BigBall() for i in range (10)]
 
 def destroy_world():
-    global kabi, clouds, background
+    global kabi, clouds, background, balls
 
     del(kabi)
     del(clouds)
@@ -73,6 +73,12 @@ def collide(a, b):
     if top_a < bottom_b: return False
     return True
 
+def high_check(a, b):
+    if a.y - 13 > b.y:
+        return True
+    else:
+        return False
+
 
 def update(frame_time):
     kabi.update(frame_time)
@@ -81,9 +87,11 @@ def update(frame_time):
     #     ball.update(frame_time)
     #
     for cloud in clouds:
-        if collide(kabi,cloud):
-            kabi.stop()
-            print("collision")
+        if kabi.up_down_state == kabi.DOWN:
+            if collide(kabi,cloud):
+                if high_check(kabi, cloud):
+                    kabi.stop()
+
 
     for ball in balls:
         ball.update(frame_time)
@@ -91,6 +99,7 @@ def update(frame_time):
     for ball in balls:
         if collide(kabi,ball):
             ball.stop()
+            kabi.death()
 
 
 

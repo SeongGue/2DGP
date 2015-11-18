@@ -1,5 +1,4 @@
 from pico2d import *
-from kabi import Kabi
 
 
 class Background:

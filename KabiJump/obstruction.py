@@ -12,8 +12,8 @@ class BigBall():
 
     image = None
     def __init__(self):
-        self.x, self.y = random.randint(100, 700), 500
-        self.fall_speed = 0
+        self.x, self.y = random.randint(100, 700), random.randint(600, 1200)
+        self.fall_speed = random.randint(0, 20)
         if BigBall.image == None:
             BigBall.image = load_image('resource\\ball41x41.png')
 
@@ -23,6 +23,9 @@ class BigBall():
     def update(self, frame_time):
         self.y -= frame_time * self.fall_speed
         self.fall_speed += frame_time * BigBall.RUN_SPEED_PPS
+        if (self.y < 0):
+            self.x, self.y = random.randint(100, 700), random.randint(600, 800)
+            self.fall_speed = random.randint(0, 20)
 
     def draw(self):
         self.image.draw(self.x, self.y)
