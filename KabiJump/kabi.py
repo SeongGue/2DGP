@@ -176,7 +176,7 @@ class Kabi:
             if (self.up_down_state, self.act_state) == (Kabi.DOWN, Kabi.FLY_STATE): #업 다운으로만 조건을 주면 구름에서 다운 방향키 뗄데 추락함
                 self.up_down_state = Kabi.STOP
 
-    def update(self, frame_time):
+    def update(self, frame_time, scroll_high):
         def clamp(minimum, x, maximum):
             return max(minimum, min(x, maximum))
 
@@ -193,6 +193,7 @@ class Kabi:
         self.x += (self.direction_state * distance)
 
         self.x = clamp(0, self.x, 800)
+        self.y -= scroll_high * frame_time
 
         self.handle_state[self.act_state](self, frame_time)
 
@@ -230,4 +231,4 @@ class Kabi:
         if self.direction_state in (self.LEFT, self.RIGHT):
             self.act_state = Kabi.WALK_STATE
     def death(self):
-        print("death")
+        pass

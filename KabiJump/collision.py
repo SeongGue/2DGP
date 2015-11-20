@@ -15,6 +15,17 @@ clouds = None
 background = None
 balls = None
 
+PIXEL_PER_METER = (10.0 / 0.3)           # 10 pixel 30 cm
+SCROLL_SPEED_KMPH = 40.0                    # Km / Hour
+SCROLL_SPEED_MPM = (SCROLL_SPEED_KMPH * 1000.0 / 60.0)
+SCROLL_SPEED_MPS = (SCROLL_SPEED_MPM / 60.0)
+SCROLL_SPEED_PPS = (SCROLL_SPEED_MPS * PIXEL_PER_METER)
+
+ON, OFF = 0, 1
+SCROLL_DOWN = OFF
+
+scroll_high = 0
+
 def create_world():
     global kabi, clouds, background, balls
     kabi = Kabi()
@@ -75,26 +86,39 @@ def collide(a, b):
     return True
 
 def high_check(a, b):
-    if a.y - 13 > b.y:
+    if a.y  - 13 > b.high:
         return True
     else:
         return False
 
 
 def update(frame_time):
-    kabi.update(frame_time)
+    global SCROLL_DOWN, scroll_high
+    kabi.update(frame_time, scroll_high)
     background.update(frame_time)
     # for ball in balls:
     #     ball.update(frame_time)
-
     for cloud in clouds:
         if kabi.up_down_state == kabi.DOWN:
             if collide(kabi,cloud):
                 if high_check(kabi, cloud):
                     kabi.stop()
+                    print('collison')
+
+    if kabi.y > 400:
+        SCROLL_DOWN = ON
+    elif kabi.y < 400:
+        SCROLL_DOWN = OFF
+
+    if SCROLL_DOWN == ON:
+        scroll_high += SCROLL_SPEED_PPS * frame_time
 
     for cloud in clouds:
         cloud.update(frame_time)
+
+
+
+
 
 
 
@@ -106,13 +130,16 @@ def update(frame_time):
             ball.stop()
             kabi.death()
 
+    print(scroll_high)
+
 
 
 def draw(frame_time):
+    global scroll_high
     clear_canvas()
     background.draw()
     for cloud in clouds:
-        cloud.draw()
+        cloud.draw(scroll_high)
         cloud.draw_bb()
     kabi.draw()
     kabi.draw_bb()
