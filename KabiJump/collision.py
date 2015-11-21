@@ -5,7 +5,7 @@ import title_state
 
 from kabi import Kabi # import Boy class from boy.py
 from cloud import Cloud
-from background import Background, Grass
+from background import Background, Grass, Top_Grass
 from obstruction import BigBall
 
 name = "collision"
@@ -15,25 +15,32 @@ clouds = None
 background = None
 balls = None
 grass = None
+top_grass = None
+
+OFF, ON = 0, 1
+
+change_field = OFF
 
 
 def create_world():
-    global kabi, clouds, background, balls, grass
+    global kabi, clouds, background, balls, grass, top_grass
     kabi = Kabi()
     clouds = [Cloud() for i in range(10)]
     background = Background(800, 1064)
     balls = [BigBall() for i in range (10)]
-    grass = Grass()
+    grass = Grass(400, 0)
+    top_grass = Top_Grass(400, 600)
 
 
 def destroy_world():
-    global kabi, clouds, background, balls
+    global kabi, clouds, background, balls, grass, top_grass
 
     del(kabi)
     del(clouds)
     del(background)
     del(balls)
     del(grass)
+    del(top_grass)
 
 
 def enter():
@@ -65,7 +72,6 @@ def handle_events(frame_time):
             game_framework.change_state(title_state)
         else:
             kabi.handle_event(event)
-            background.handle_event(event)
 
 
 def collide(a, b):
@@ -80,35 +86,51 @@ def collide(a, b):
 
 
 def update(frame_time):
-    kabi.update(frame_time)
-    grass.update(frame_time)
+    global change_field
+    if collide(kabi, top_grass):
+        change_field = ON
+
+    if change_field == ON:
+        kabi.change_field(frame_time)
+        grass.change_field(frame_time  )
+        top_grass.change_field(frame_time)
+        background.update(frame_time)
+        for cloud in clouds:
+            cloud.update(frame_time )
+        if kabi.y < 50:
+            change_field = OFF
+            grass.y = 0
+            kabi.up_down = True
+        pass
 
 
-    if collide(kabi, grass):
-        kabi.on_ground(grass.y + grass.image.h / 3)
-        #print('collide')
+    if change_field == OFF:
+        kabi.update(frame_time)
+        print(change_field)
 
-    # background.update(frame_time)
+        if collide(kabi, grass):
+            kabi.on_ground(grass.y + grass.image.h / 3)
+            #print('collide')
 
-    for cloud in clouds:
-        if kabi.y  > cloud.y:
-            if kabi.current_speed < 0:
-                if collide(kabi,cloud):
-                    kabi.on_ground(cloud.y)
-                    #print('collide')
+        for cloud in clouds:
+            if kabi.y  > cloud.y:
+                if kabi.current_speed < 0:
+                    if collide(kabi,cloud):
+                        kabi.on_ground(cloud.y)
+                        #print('collide')
 
-    for ball in balls:
-        ball.update(frame_time)
+        for ball in balls:
+            ball.update(frame_time)
 
-    for ball in balls:
-        if collide(kabi,ball):
-            ball.stop()
-            kabi.death()
+        for ball in balls:
+            if collide(kabi,ball):
+                ball.stop()
+                kabi.death()
 
 
 def draw(frame_time):
     clear_canvas()
-    # background.draw()
+    background.draw()
     for cloud in clouds:
         cloud.draw()
         cloud.draw_bb()
@@ -117,6 +139,9 @@ def draw(frame_time):
 
     grass.draw()
     grass.draw_bb()
+
+    top_grass.draw()
+    top_grass.draw_bb()
 
     for ball in balls:
         ball.draw()

@@ -1,5 +1,7 @@
 from pico2d import *
 
+up_down = True
+
 class Kabi:
     PIXEL_PER_METER = (10.0 / 0.3)           # 10 pixel 30 cm
     RUN_SPEED_KMPH = 20.0                    # Km / Hour
@@ -28,6 +30,8 @@ class Kabi:
     DOWN, STOP ,UP= -1, 0, 1
 
     KABI_BOX = 15
+
+    up_down = True
 
     def handle_stand(self, frame_time):
         if self.current_speed < 0:
@@ -205,13 +209,24 @@ class Kabi:
         self.gravity = 0
         self.current_speed = 0
         self.y = int(high + Kabi.KABI_BOX)
-        print(self.y )
         self.act_state = Kabi.STAND_STATE
         if self.direction_state in (self.LEFT, self.RIGHT):
             self.act_state = Kabi.WALK_STATE
 
+    def change_field(self,frame_time):
+        distance = Kabi.RUN_SPEED_PPS * frame_time
+        if self.up_down == True:
+            self.y += distance
+            if self.y > 600:
+                self.up_down = False
+        if self.up_down == False:
+            if self.y > 50:
+                self.y -= distance
 
-
+        if self.x > 200:
+            self.x -= distance
+        if self.x < 200:
+            self.x += distance
     def death(self):
         pass
 
