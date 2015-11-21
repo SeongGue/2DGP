@@ -5,7 +5,7 @@ import title_state
 
 from kabi import Kabi # import Boy class from boy.py
 from cloud import Cloud
-from background import Background
+from background import Background, Grass
 from obstruction import BigBall
 
 name = "collision"
@@ -14,9 +14,10 @@ kabi = None
 clouds = None
 background = None
 balls = None
+grass = None
 
 PIXEL_PER_METER = (10.0 / 0.3)           # 10 pixel 30 cm
-SCROLL_SPEED_KMPH = 40.0                    # Km / Hour
+SCROLL_SPEED_KMPH = 80.0                    # Km / Hour
 SCROLL_SPEED_MPM = (SCROLL_SPEED_KMPH * 1000.0 / 60.0)
 SCROLL_SPEED_MPS = (SCROLL_SPEED_MPM / 60.0)
 SCROLL_SPEED_PPS = (SCROLL_SPEED_MPS * PIXEL_PER_METER)
@@ -27,11 +28,12 @@ SCROLL_DOWN = OFF
 scroll_high = 0
 
 def create_world():
-    global kabi, clouds, background, balls
+    global kabi, clouds, background, balls, grass
     kabi = Kabi()
     clouds = [Cloud() for i in range(10)]
     background = Background(800, 1064)
     balls = [BigBall() for i in range (10)]
+    grass = Grass()
 
 def destroy_world():
     global kabi, clouds, background, balls
@@ -40,6 +42,7 @@ def destroy_world():
     del(clouds)
     del(background)
     del(balls)
+    del(grass)
 
 
 
@@ -86,66 +89,72 @@ def collide(a, b):
     return True
 
 def high_check(a, b):
-    if a.y  - 13 > b.high:
-        return True
-    else:
-        return False
+    # if a.y  > b.y:
+    #     return True
+    # else:
+    #     return False
+    pass
+
+
 
 
 def update(frame_time):
-    global SCROLL_DOWN, scroll_high
-    kabi.update(frame_time, scroll_high)
-    background.update(frame_time)
+    #global SCROLL_DOWN, scroll_high
+    kabi.update(frame_time)
+    grass.update(frame_time)
+
+    if collide(kabi, grass):
+        kabi.on_ground(grass.y + grass.image.h / 3)
+    # background.update(frame_time)
+    # # for ball in balls:
+    # #     ball.update(frame_time)
+    # for cloud in clouds:
+    #     if kabi.up_down_state == kabi.DOWN:
+    #         if collide(kabi,cloud):
+    #             if high_check(kabi, cloud):
+    #                 kabi.stop()
+    #
+    # if kabi.y > 400:
+    #     SCROLL_DOWN = ON
+    # elif kabi.y < 400:
+    #     SCROLL_DOWN = OFF
+    #
+    # if SCROLL_DOWN == ON:
+    #     scroll_high += SCROLL_SPEED_PPS * frame_time
+    #
+    # for cloud in clouds:
+    #     cloud.update(frame_time)
+    #
+    #
     # for ball in balls:
     #     ball.update(frame_time)
-    for cloud in clouds:
-        if kabi.up_down_state == kabi.DOWN:
-            if collide(kabi,cloud):
-                if high_check(kabi, cloud):
-                    kabi.stop()
-                    print('collison')
-
-    if kabi.y > 400:
-        SCROLL_DOWN = ON
-    elif kabi.y < 400:
-        SCROLL_DOWN = OFF
-
-    if SCROLL_DOWN == ON:
-        scroll_high += SCROLL_SPEED_PPS * frame_time
-
-    for cloud in clouds:
-        cloud.update(frame_time)
+    #
+    # for ball in balls:
+    #     if collide(kabi,ball):
+    #         ball.stop()
+    #         kabi.death()
 
 
 
 
-
-
-
-    for ball in balls:
-        ball.update(frame_time)
-
-    for ball in balls:
-        if collide(kabi,ball):
-            ball.stop()
-            kabi.death()
-
-    print(scroll_high)
 
 
 
 def draw(frame_time):
     global scroll_high
     clear_canvas()
-    background.draw()
-    for cloud in clouds:
-        cloud.draw(scroll_high)
-        cloud.draw_bb()
+    # background.draw()
+    # for cloud in clouds:
+    #     cloud.draw(scroll_high)
+    #     cloud.draw_bb()
     kabi.draw()
     kabi.draw_bb()
 
-    for ball in balls:
-        ball.draw()
-        ball.draw_bb()
+    grass.draw()
+    grass.draw_bb()
+    #
+    # for ball in balls:
+    #     ball.draw()
+    #     ball.draw_bb()
 
     update_canvas()
