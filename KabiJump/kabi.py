@@ -7,14 +7,14 @@ class Kabi:
     RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
     RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 
-    JUMP_SPEED_KMPH = 35.0
+    JUMP_SPEED_KMPH = 40.0
     JUMP_SPEED_MPM = (JUMP_SPEED_KMPH * 1000.0 / 60.0)
     JUMP_SPEED_MPS = (JUMP_SPEED_MPM / 60.0)
     JUMP_SPEED_PPS = (JUMP_SPEED_MPS * PIXEL_PER_METER)
 
-    GRAVITY_SPEED_KMPH = 3000.0
-    GRAVITY_SPEED_MPM = (GRAVITY_SPEED_KMPH * 1000.0 / 360.0)
-    GRAVITY_SPEED_MPS = (GRAVITY_SPEED_MPM / 360.0)
+    GRAVITY_SPEED_KMPH = 100.0
+    GRAVITY_SPEED_MPM = (GRAVITY_SPEED_KMPH * 1000.0 / 60.0)
+    GRAVITY_SPEED_MPS = (GRAVITY_SPEED_MPM / 60.0)
     GRAVITY_SPEED_PPS = (GRAVITY_SPEED_MPS * PIXEL_PER_METER)
 
     TIME_PER_ACTION = 1.0
@@ -30,26 +30,25 @@ class Kabi:
     KABI_BOX = 15
 
     def handle_stand(self, frame_time):
-        # if self.y != Kabi.START_Y:
-        #     self.act_state = Kabi.FALL_STATE
-        # self.jump_power = Kabi.JUMP_SPEED_PPS
-        # self.gravity = Kabi.GRAVITY_SPEED_PPS
-        # self.fall_speed = Kabi.FALL_SPEED_PPS
-        # self.up_down_state = Kabi.DOWN
+        if self.current_speed < 0:
+            self.act_state = Kabi.FALL_STATE
+        self.current_speed = -1 ##이거시 중력인가 ㅋ.ㅋ
         pass
 
+
+
     def handle_walk(self, frame_time):
-        # if self.y != Kabi.START_Y:
-        #     self.act_state = Kabi.FALL_STATE
-        # self.jump_power = Kabi.JUMP_SPEED_PPS
-        # self.gravity = Kabi.GRAVITY_SPEED_PPS
-        # self.fall_speed = Kabi.FALL_SPEED_PPS
-        # self.up_down_state = Kabi.DOWN
+        if self.current_speed < 0:
+            self.act_state = Kabi.FALL_STATE
+        self.current_speed = -1
         pass
+
 
     def handle_jump(self, frame_time):
         self.gravity += Kabi.GRAVITY_SPEED_PPS * frame_time
-        self.y += (Kabi.JUMP_SPEED_PPS - self.gravity) * frame_time
+        self.current_speed = (Kabi.JUMP_SPEED_PPS - self.gravity)
+        self.y += self.current_speed * frame_time
+
 
     def handle_fly(self, frame_time):
         high = Kabi.RUN_SPEED_PPS * frame_time
@@ -57,8 +56,10 @@ class Kabi:
 
 
     def handle_fall(self, frame_time):
-        self.gravity += Kabi.GRAVITY_SPEED_PPS * frame_time
-        self.y -= self.gravity * frame_time
+        self.gravity -= Kabi.GRAVITY_SPEED_PPS * frame_time
+        self.current_speed = self.gravity
+        self.y += self.gravity * frame_time
+
 
     def __init__(self):
         self.save_direction = Kabi.LEFT
@@ -84,6 +85,7 @@ class Kabi:
 
         self.x, self.y = 400, 50
         self.gravity = 0
+        self.current_speed = 0
 
     handle_state = {
         STAND_STATE : handle_stand,
@@ -92,6 +94,7 @@ class Kabi:
         FLY_STATE : handle_fly,
         FALL_STATE : handle_fall
     }
+
 
     def handle_event(self, event):
         if(event.type, event.key) == (SDL_KEYDOWN, SDLK_LEFT): #왼쪽 걷기
@@ -120,6 +123,7 @@ class Kabi:
 
         elif(event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE): #점프 비행
             self.gravity = 0
+            self.current_speed = 0
             if self.act_state in (Kabi.JUMP_STATE, Kabi.FALL_STATE):
                 self.act_state = Kabi.FLY_STATE
             else:
@@ -141,6 +145,7 @@ class Kabi:
         elif(event.type, event.key) == (SDL_KEYUP, SDLK_DOWN):
                 self.up_down_state = Kabi.STOP
 
+
     def update(self, frame_time):
         def clamp(minimum, x, maximum):
             return max(minimum, min(x, maximum))
@@ -160,6 +165,7 @@ class Kabi:
         self.fly_frame = int(self.fly_total_frames) % 7
 
         self.handle_state[self.act_state](self, frame_time)
+
 
     def draw(self):
         if(self.save_direction == self.LEFT):
@@ -186,19 +192,25 @@ class Kabi:
             elif(self.act_state == Kabi.FALL_STATE):
                 self.right_walk.clip_draw(512, 0, 51, 50, self.x, self.y)
 
+
     def draw_bb(self):
         draw_rectangle(*self.get_bb())
+
 
     def get_bb(self):
         return self.x - Kabi.KABI_BOX, self.y - Kabi.KABI_BOX, self.x + Kabi.KABI_BOX, self.y + Kabi.KABI_BOX
 
+
     def on_ground(self, high):
         self.gravity = 0
-        self.y = high + Kabi.KABI_BOX
+        self.current_speed = 0
+        self.y = int(high + Kabi.KABI_BOX)
+        print(self.y )
         self.act_state = Kabi.STAND_STATE
         if self.direction_state in (self.LEFT, self.RIGHT):
             self.act_state = Kabi.WALK_STATE
-        self.jump_power = Kabi.JUMP_SPEED_PPS
+
+
 
     def death(self):
         pass
