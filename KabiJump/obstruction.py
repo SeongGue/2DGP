@@ -21,7 +21,7 @@ class BigBall():
     def stop(self):
         self.fall_speed = 0
 
-    def update(self, frame_time):
+    def update  (self, frame_time):
         self.fall_speed += BigBall.FALL_SPEED_PPS * frame_time
         self.y -= self.fall_speed * frame_time
         if (self.y < 0):

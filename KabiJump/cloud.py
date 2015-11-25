@@ -13,17 +13,17 @@ class Cloud:
 
     CLOUD_ROW, CLOUD_COL = 120, 70
 
-    def __init__(self):
-        self.x, self.y = random.randint(200, 730), random.randint(100, 500)
+    def __init__(self, y):
+        self.x, self.y = random.randint(200, 730), y + random.randint(100, 500)
         if Cloud.image == None:
             Cloud.image = load_image('resource\\cloud_one.png')
 
 
-    def update(self, frame_time):
+    def update(self, frame_time, change_field):
         self.cloud_speed = Cloud.SCROLL_SPEED_PPS
         self.y -= self.cloud_speed * frame_time
-        if(self.y < 0):
-            self.x, self.y = random.randint(200, 730), random.randint(700, 1200)
+        if(self.y <= 0):
+            self.x, self.y = random.randint(200, 730), random.randint(1300, 1700)
 
     def draw(self):
         self.image.draw(self.x, self.y)
@@ -35,3 +35,4 @@ class Cloud:
 
     def get_bb(self):
         return self.x - Cloud.image.w / 2, self.y - Cloud.image.h / 2 , self.x + Cloud.image.w / 2, self.y
+

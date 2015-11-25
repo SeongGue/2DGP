@@ -39,28 +39,9 @@ class Grass:
         self.x, self.y = x, y
 
     def change_field(self, frame_time):
-        self.y -= SCROLL_SPEED_PPS * frame_time
-
-    def draw(self):
-        self.image.draw(self.x, self.y)
-
-    def draw_bb(self):
-        draw_rectangle(*self.get_bb())
-
-    def get_bb(self):
-        return self.x - self.image.w / 2, self.y - self.image.h / 2, self.x + self.image.w / 2, self.y + self.image.h /3
-
-class Top_Grass:
-    global SCROLL_SPEED_PPS
-
-    def __init__(self, x, y):
-        self.image = load_image('resource\\grass.png')
-        self.x, self.y = x, y
-
-    def change_field(self, frame_time):
         if self.y > 0:
             self.y -= SCROLL_SPEED_PPS * frame_time
-        if self.y < 0:
+        if self.y <= 0:
             self.y = 600
 
     def draw(self):
