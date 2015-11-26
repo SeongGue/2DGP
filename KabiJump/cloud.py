@@ -10,13 +10,16 @@ class Cloud:
     SCROLL_SPEED_PPS = (SCROLL_SPEED_MPS * PIXEL_PER_METER)
 
     image = None
-
-    CLOUD_ROW, CLOUD_COL = 120, 70
+    collision = None
+    PRE_COL, AFT_COL = 0, 1
 
     def __init__(self, y):
         self.x, self.y = random.randint(200, 730), y + random.randint(100, 500)
+        self.cloud_state = Cloud.PRE_COL
         if Cloud.image == None:
-            Cloud.image = load_image('resource\\cloud_one.png')
+            Cloud.image = load_image('resource\\cloud.png')
+        if Cloud.collision == None:
+            Cloud.collision = load_image('resource\\collision_cloud.png')
 
 
     def update(self, frame_time, change_field):
@@ -26,7 +29,11 @@ class Cloud:
             self.x, self.y = random.randint(200, 730), random.randint(1300, 1700)
 
     def draw(self):
-        self.image.draw(self.x, self.y)
+        if self.cloud_state == Cloud.PRE_COL:
+            self.image.draw(self.x, self.y)
+
+        elif self.cloud_state == Cloud.AFT_COL:
+            self.collision.draw(self.x, self.y)
 
 
     def draw_bb(self):
@@ -35,4 +42,7 @@ class Cloud:
 
     def get_bb(self):
         return self.x - Cloud.image.w / 2, self.y - Cloud.image.h / 2 , self.x + Cloud.image.w / 2, self.y
+
+    def change_cloud(self):
+        self.cloud_state = Cloud.AFT_COL
 

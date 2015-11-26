@@ -2,6 +2,7 @@ from pico2d import *
 
 import game_framework
 import title_state
+#import start_state
 
 from kabi import Kabi # import Boy class from boy.py
 from cloud import Cloud
@@ -63,13 +64,14 @@ def resume():
 
 
 def handle_events(frame_time):
+    global kabi
     events = get_events()
-
     for event in events:
         if event.type == SDL_QUIT:
             game_framework.quit()
         elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_ESCAPE):
             game_framework.change_state(title_state)
+            #game_framework.change_state(start_state)
         else:
             kabi.handle_event(event)
 
@@ -116,9 +118,9 @@ def update(frame_time):
                 if kabi.current_speed < 0:
                     if collide(kabi,cloud):
                         kabi.on_ground(cloud.y)
+                        cloud.change_cloud()
 
-        for cloud in clouds:
-            cloud.update(frame_time, change_field)
+
 
         for ball in balls:
             ball.update(frame_time)
