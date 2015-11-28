@@ -1,4 +1,7 @@
 from pico2d import *
+import game_framework
+
+import title_state
 
 up_down = True
 
@@ -45,7 +48,6 @@ class Kabi:
         if self.current_speed < 0:
             self.act_state = Kabi.FALL_STATE
         self.current_speed = -1
-        pass
 
 
     def handle_jump(self, frame_time):
@@ -69,7 +71,7 @@ class Kabi:
         self.save_direction = Kabi.LEFT
         self.direction_state = Kabi.STOP
         self.up_down_state = Kabi.STOP
-        self.act_state = Kabi.FALL_STATE
+        self.act_state = Kabi.STAND_STATE
         self.left_stand = load_image('resource\\Lidle_kabi.png')
         self.right_stand = load_image('resource\\Ridle_kabi.png')
         self.left_walk = load_image('resource\\Lwalk_kabi.png')
@@ -228,5 +230,6 @@ class Kabi:
         if self.x < 200:
             self.x += distance
     def death(self):
+        #game_framework.change_state(title_state)
         pass
 

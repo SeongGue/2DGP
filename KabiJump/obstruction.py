@@ -40,3 +40,7 @@ class BigBall():
     def get_bb(self):
         return self.x - 10, self.y - 10, self.x + 10, self.y + 10
 
+    def regen(self):
+        self.x, self.y = random.randint(100, 700), random.randint(600, 1200)
+        self.fall_speed = random.randint(0, 20)
+

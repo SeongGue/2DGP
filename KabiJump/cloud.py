@@ -13,20 +13,20 @@ class Cloud:
     collision = None
     PRE_COL, AFT_COL = 0, 1
 
+
     def __init__(self, y):
         self.x, self.y = random.randint(200, 730), y + random.randint(100, 500)
         self.cloud_state = Cloud.PRE_COL
+
         if Cloud.image == None:
             Cloud.image = load_image('resource\\cloud.png')
         if Cloud.collision == None:
             Cloud.collision = load_image('resource\\collision_cloud.png')
 
 
-    def update(self, frame_time, change_field):
+    def update(self, frame_time):
         self.cloud_speed = Cloud.SCROLL_SPEED_PPS
         self.y -= self.cloud_speed * frame_time
-        if(self.y <= 0):
-            self.x, self.y = random.randint(200, 730), random.randint(1300, 1700)
 
     def draw(self):
         if self.cloud_state == Cloud.PRE_COL:
@@ -45,4 +45,9 @@ class Cloud:
 
     def change_cloud(self):
         self.cloud_state = Cloud.AFT_COL
+
+    def regen(self):
+        if(self.y <= 0):
+            self.x, self.y = random.randint(200, 730), random.randint(100, 500)
+            self.cloud_state = Cloud.PRE_COL
 

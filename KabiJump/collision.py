@@ -22,6 +22,10 @@ OFF, ON = 0, 1
 
 change_field = OFF
 
+COL_CLOUDS = 0
+CHECK_COL_CLOUD = 0
+
+
 
 def create_world():
     global kabi, clouds, background, balls, grass, top_grass
@@ -37,9 +41,9 @@ def destroy_world():
     global kabi, clouds, background, balls, grass, top_grass
 
     del(kabi)
-    del(clouds)
+    clouds.clear()
     del(background)
-    del(balls)
+    balls.clear()
     del(grass)
     del(top_grass)
 
@@ -70,8 +74,7 @@ def handle_events(frame_time):
         if event.type == SDL_QUIT:
             game_framework.quit()
         elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_ESCAPE):
-            game_framework.change_state(title_state)
-            #game_framework.change_state(start_state)
+            game_framework.push_state(title_state)
         else:
             kabi.handle_event(event)
 
@@ -88,9 +91,10 @@ def collide(a, b):
 
 
 def update(frame_time):
-    global change_field
+    global change_field, COL_CLOUDS, CHECK_COL_CLOUD
 
     if collide(kabi, top_grass):
+        if COL_CLOUDS == 10:
             change_field = ON
 
     if change_field == ON:
@@ -98,10 +102,16 @@ def update(frame_time):
         grass.change_field(frame_time)
         top_grass.change_field(frame_time)
         background.update(frame_time)
+        for ball in balls:
+            ball.y = -20
         for cloud in clouds:
             cloud.update(frame_time, change_field)
         if kabi.y < 50:
             change_field = OFF
+            for cloud in clouds:
+                cloud.regen()
+            for ball in balls:
+                ball.regen()
             grass.y = 0
             kabi.up_down = True
 
@@ -114,13 +124,12 @@ def update(frame_time):
 
 
         for cloud in clouds:
-            if kabi.y  > cloud.y:
-                if kabi.current_speed < 0:
-                    if collide(kabi,cloud):
-                        kabi.on_ground(cloud.y)
-                        cloud.change_cloud()
-
-
+            if collide(kabi,cloud):
+                cloud.change_cloud()
+                if kabi.y  > cloud.y:
+                    if kabi.current_speed < 0:
+                        if collide(kabi,cloud):
+                            kabi.on_ground(cloud.y)
 
         for ball in balls:
             ball.update(frame_time)
@@ -129,6 +138,15 @@ def update(frame_time):
             if collide(kabi,ball):
                 ball.stop()
                 kabi.death()
+
+        for cloud in clouds:
+            if cloud.cloud_state == cloud.AFT_COL:
+                CHECK_COL_CLOUD += 1
+
+        COL_CLOUDS = CHECK_COL_CLOUD
+        CHECK_COL_CLOUD = 0
+        print(COL_CLOUDS)
+
 
 
 def draw(frame_time):
