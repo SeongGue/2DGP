@@ -2,14 +2,14 @@ from pico2d import *
 
 import game_framework
 import title_state
-#import start_state
 
 from kabi import Kabi # import Boy class from boy.py
 from cloud import Cloud
 from background import Background, Grass
 from obstruction import BigBall
 
-name = "collision"
+
+name = "MainState"
 
 kabi = None
 clouds = None
@@ -24,8 +24,6 @@ change_field = OFF
 
 COL_CLOUDS = 0
 CHECK_COL_CLOUD = 0
-
-
 
 def create_world():
     global kabi, clouds, background, balls, grass, top_grass
@@ -49,8 +47,6 @@ def destroy_world():
 
 
 def enter():
-    open_canvas()
-    game_framework.reset_time()
     create_world()
 
 
@@ -78,18 +74,6 @@ def handle_events(frame_time):
         else:
             kabi.handle_event(event)
 
-
-def collide(a, b):
-    left_a, bottom_a, right_a, top_a = a.get_bb()
-    left_b, bottom_b, right_b, top_b = b.get_bb()
-
-    if left_a > right_b: return False
-    if right_a < left_b: return False
-    if bottom_a > top_b: return False
-    if top_a < bottom_b: return False
-    return True
-
-
 def update(frame_time):
     global change_field, COL_CLOUDS, CHECK_COL_CLOUD
 
@@ -105,7 +89,7 @@ def update(frame_time):
         for ball in balls:
             ball.y = -20
         for cloud in clouds:
-            cloud.update(frame_time, change_field)
+            cloud.update(frame_time)
         if kabi.y < 50:
             change_field = OFF
             for cloud in clouds:
@@ -171,3 +155,13 @@ def draw(frame_time):
         ball.draw_bb()
 
     update_canvas()
+
+def collide(a, b):
+    left_a, bottom_a, right_a, top_a = a.get_bb()
+    left_b, bottom_b, right_b, top_b = b.get_bb()
+
+    if left_a > right_b: return False
+    if right_a < left_b: return False
+    if bottom_a > top_b: return False
+    if top_a < bottom_b: return False
+    return True

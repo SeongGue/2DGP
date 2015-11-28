@@ -1,5 +1,5 @@
 import game_framework
-import collision
+import main_state
 from pico2d import *
 
 
@@ -26,7 +26,7 @@ def handle_events(frame_time):
             if(event.type, event.key) == (SDL_KEYDOWN, SDLK_ESCAPE):
                 game_framework.quit()
             elif(event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
-                game_framework.change_state(collision)
+                game_framework.change_state(main_state)
 
 def draw(frame_time):
     clear_canvas()

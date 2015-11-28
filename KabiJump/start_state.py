@@ -16,15 +16,13 @@ def enter():
 def exit():
     global image
     del(image)
-    close_canvas()
 
 def update(frame_time):
     global logo_time
 
-    if(logo_time > 1.0):
+    if(logo_time > 1.5):
         logo_time = 0
         game_framework.push_state(title_state)
-    delay(0.01)
     logo_time += 0.01
 
 def draw(frame_time):
@@ -35,7 +33,6 @@ def draw(frame_time):
 
 def handle_events(frame_time):
     events = get_events()
-    pass
 
 
 def pause(): pass
