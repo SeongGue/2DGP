@@ -7,7 +7,7 @@ from kabi import Kabi # import Boy class from boy.py
 from cloud import Cloud
 from background import Background, Grass
 from obstruction import BigBall
-
+from ui import Ui
 
 name = "MainState"
 
@@ -17,6 +17,7 @@ top_clouds = None
 background = None
 balls = None
 grass = None
+ui = None
 
 OFF, ON = 0, 1
 
@@ -26,17 +27,18 @@ COL_CLOUDS = 0
 CHECK_COL_CLOUD = 0
 
 def create_world():
-    global kabi, clouds, background, balls, grass, top_grass
+    global kabi, clouds, background, balls, grass, top_grass, ui
     kabi = Kabi()
     clouds = [Cloud(0) for i in range(10)]
     background = Background(800, 1064)
     balls = [BigBall() for i in range (10)]
     grass = Grass(400, 0)
     top_grass = Grass(400, 600)
+    ui = Ui()
 
 
 def destroy_world():
-    global kabi, clouds, background, balls, grass, top_grass
+    global kabi, clouds, background, balls, grass, top_grass, ui
 
     del(kabi)
     clouds.clear()
@@ -44,6 +46,7 @@ def destroy_world():
     balls.clear()
     del(grass)
     del(top_grass)
+    del(ui)
 
 
 def enter():
@@ -131,6 +134,8 @@ def update(frame_time):
         CHECK_COL_CLOUD = 0
         print(COL_CLOUDS)
 
+        ui.update(frame_time, kabi.y)
+
 
 
 def draw(frame_time):
@@ -153,6 +158,8 @@ def draw(frame_time):
     for ball in balls:
         ball.draw()
         ball.draw_bb()
+
+    ui.draw()
 
     update_canvas()
 

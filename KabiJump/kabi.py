@@ -1,4 +1,5 @@
 from pico2d import *
+
 import game_framework
 
 import title_state
@@ -72,14 +73,14 @@ class Kabi:
         self.direction_state = Kabi.STOP
         self.up_down_state = Kabi.STOP
         self.act_state = Kabi.STAND_STATE
-        self.left_stand = load_image('resource\\Lidle_kabi.png')
-        self.right_stand = load_image('resource\\Ridle_kabi.png')
-        self.left_walk = load_image('resource\\Lwalk_kabi.png')
-        self.right_walk = load_image('resource\\Rwalk_kabi.png')
-        self.left_jump = load_image('resource\\Ljump_kabi.png')
-        self.right_jump = load_image('resource\\Rjump_kabi.png')
-        self.left_Fly = load_image('resource\\Lfly_kabi.png')
-        self.right_Fly = load_image('resource\\Rfly_kabi.png')
+        self.left_stand = load_image('resource\\image\\Lidle_kabi.png')
+        self.right_stand = load_image('resource\\image\\Ridle_kabi.png')
+        self.left_walk = load_image('resource\\image\\Lwalk_kabi.png')
+        self.right_walk = load_image('resource\\image\\Rwalk_kabi.png')
+        self.left_jump = load_image('resource\\image\\Ljump_kabi.png')
+        self.right_jump = load_image('resource\\image\\Rjump_kabi.png')
+        self.left_Fly = load_image('resource\\image\\Lfly_kabi.png')
+        self.right_Fly = load_image('resource\\image\\Rfly_kabi.png')
 
         self.walk_frame = 0
         self.jump_frame = 0
@@ -230,6 +231,6 @@ class Kabi:
         if self.x < 200:
             self.x += distance
     def death(self):
-        game_framework.push_state(title_state)
+        #game_framework.push_state(title_state)
         pass
 

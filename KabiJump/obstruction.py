@@ -15,7 +15,7 @@ class BigBall():
         self.x, self.y = random.randint(100, 700), random.randint(600, 1500)
         self.fall_speed = random.randint(0, 20)
         if BigBall.image == None:
-            BigBall.image = load_image('resource\\ball41x41.png')
+            BigBall.image = load_image('resource\\image\\ball41x41.png')
 
 
     def stop(self):

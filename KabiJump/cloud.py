@@ -19,9 +19,9 @@ class Cloud:
         self.cloud_state = Cloud.PRE_COL
 
         if Cloud.image == None:
-            Cloud.image = load_image('resource\\cloud.png')
+            Cloud.image = load_image('resource\\image\\cloud.png')
         if Cloud.collision == None:
-            Cloud.collision = load_image('resource\\collision_cloud.png')
+            Cloud.collision = load_image('resource\\image\\collision_cloud.png')
 
 
     def update(self, frame_time):

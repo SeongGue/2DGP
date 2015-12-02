@@ -10,7 +10,7 @@ class Background:
     global SCROLL_SPEED_PPS
 
     def __init__(self, w, h):
-        self.image = load_image('resource\\background.png') # 960x272
+        self.image = load_image('resource\\image\\background.png') # 960x272
 
         self.speed_y = 0
         self.down = 0
@@ -35,7 +35,7 @@ class Grass:
     global SCROLL_SPEED_PPS
 
     def __init__(self, x, y):
-        self.image = load_image('resource\\grass.png')
+        self.image = load_image('resource\\image\\grass.png')
         self.x, self.y = x, y
 
     def change_field(self, frame_time):
