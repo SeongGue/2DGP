@@ -245,12 +245,12 @@ class Kabi:
 
     def gauge_ctrl(self, frame_time):
         if self.act_state == Kabi.FLY_STATE:
-            self.fly_gauge -= frame_time * 50
+            self.fly_gauge -= frame_time * 25
             if self.fly_gauge < 0:
                 self.act_state = Kabi.FALL_STATE
         else:
             if self.fly_gauge < 100:
                 self.fly_gauge += frame_time * 25
-        print('%d'% self.fly_gauge)
+        return self.fly_gauge
 
 

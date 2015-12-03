@@ -169,7 +169,8 @@ def draw(frame_time):
         ball.draw()
         #ball.draw_bb()
 
-    ui.draw()
+    ui.draw_font()
+    ui.draw_gauge_bar(kabi.x, kabi.y, kabi.gauge_ctrl(frame_time))
 
     update_canvas()
 
