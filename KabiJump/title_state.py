@@ -5,16 +5,20 @@ from pico2d import *
 
 name = "TitleState"
 image = None
-
+sound =None
 
 def enter():
-    global image
+    global image, sound
     image = load_image('resource\\image\\kabi_title.png')
+    sound = load_music('resource\\sound\\background_Title.mp3')
+    sound.set_volume(64)
+    sound.repeat_play()
 
 
 def exit():
-    global image
+    global image, sound
     del(image)
+    del(sound)
 
 def handle_events(frame_time):
     events = get_events()

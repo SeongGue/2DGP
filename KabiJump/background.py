@@ -11,11 +11,14 @@ class Background:
 
     def __init__(self, w, h):
         self.image = load_image('resource\\image\\background.png') # 960x272
-
         self.speed_y = 0
         self.down = 0
         self.screen_width = w
         self.screen_height = h
+
+        self.bgm = load_music('resource\\sound\\background.mp3')
+        self.bgm.set_volume(64)
+        self.bgm.repeat_play()
 
     def update(self, frame_time):
         self.speed_y =  SCROLL_SPEED_PPS

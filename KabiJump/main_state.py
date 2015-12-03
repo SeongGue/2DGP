@@ -3,7 +3,7 @@ from pico2d import *
 import game_framework
 import title_state
 
-from kabi import Kabi # import Boy class from boy.py
+from kabi import Kabi
 from cloud import Cloud
 from background import Background, Grass
 from obstruction import BigBall
@@ -25,6 +25,10 @@ change_field = OFF
 
 COL_CLOUDS = 0
 CHECK_COL_CLOUD = 0
+
+score = 0
+save_score = 0
+
 
 def create_world():
     global kabi, clouds, background, balls, grass, top_grass, ui
@@ -78,11 +82,15 @@ def handle_events(frame_time):
             kabi.handle_event(event)
 
 def update(frame_time):
-    global change_field, COL_CLOUDS, CHECK_COL_CLOUD
+    global change_field, COL_CLOUDS, CHECK_COL_CLOUD, save_score, score
 
     if collide(kabi, top_grass):
         if COL_CLOUDS == 10:
             change_field = ON
+            if save_score == 0:
+                score += kabi.y
+                save_score += 1
+
 
     if change_field == ON:
         kabi.change_field(frame_time)
@@ -90,7 +98,7 @@ def update(frame_time):
         top_grass.change_field(frame_time)
         background.update(frame_time)
         for ball in balls:
-            ball.y = -20
+            ball.y = -25
         for cloud in clouds:
             cloud.update(frame_time)
         if kabi.y < 50:
@@ -100,7 +108,9 @@ def update(frame_time):
             for ball in balls:
                 ball.regen()
             grass.y = 0
+            top_grass.y = 600
             kabi.up_down = True
+            save_score = 0
 
 
     if change_field == OFF:
@@ -132,9 +142,9 @@ def update(frame_time):
 
         COL_CLOUDS = CHECK_COL_CLOUD
         CHECK_COL_CLOUD = 0
-        print(COL_CLOUDS)
 
-        ui.update(frame_time, kabi.y)
+        ui.update(frame_time, score + kabi.y)
+
 
 
 
@@ -144,20 +154,20 @@ def draw(frame_time):
 
     for cloud in clouds:
         cloud.draw()
-        cloud.draw_bb()
+        #cloud.draw_bb()
 
     kabi.draw()
-    kabi.draw_bb()
+    #kabi.draw_bb()
 
     grass.draw()
-    grass.draw_bb()
+    #grass.draw_bb()
 
     top_grass.draw()
-    top_grass.draw_bb()
+    #top_grass.draw_bb()
 
     for ball in balls:
         ball.draw()
-        ball.draw_bb()
+        #ball.draw_bb()
 
     ui.draw()
 

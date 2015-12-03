@@ -5,12 +5,9 @@ class Ui():
     def __init__(self):
         self.font = load_font('resource\\font\\ConsolaMalgun.ttf', 20)
         self.score = 0
-        self.time = 0
 
     def draw(self):
-        print('SCORE %d' % self.score)
-        print('time %f' % get_time())
-        self.font.draw(100, 100, 'SCORE %d, time %f' % (self.score, self.time), (255,255,255))
+        self.font.draw(50, 50, 'HIGH %.1f M' % (self.score/100))
 
     def update(self, frame_time, kabi_y):
         self.score = kabi_y

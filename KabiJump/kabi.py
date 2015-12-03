@@ -4,9 +4,14 @@ import game_framework
 
 import title_state
 
-up_down = True
 
 class Kabi:
+    PIXEL_PER_METER = (10.0 / 0.3)           # 10 pixel 30 cm
+    SCROLL_SPEED_KMPH = 20.0                    # Km / Hour
+    SCROLL_SPEED_MPM = (SCROLL_SPEED_KMPH * 1000.0 / 60.0)
+    SCROLL_SPEED_MPS = (SCROLL_SPEED_MPM / 60.0)
+    SCROLL_SPEED_PPS = (SCROLL_SPEED_MPS * PIXEL_PER_METER)
+
     PIXEL_PER_METER = (10.0 / 0.3)           # 10 pixel 30 cm
     RUN_SPEED_KMPH = 20.0                    # Km / Hour
     RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
@@ -40,8 +45,7 @@ class Kabi:
     def handle_stand(self, frame_time):
         if self.current_speed < 0:
             self.act_state = Kabi.FALL_STATE
-        self.current_speed = -1 ##이거시 중력인가 ㅋ.ㅋ
-        pass
+        self.current_speed = -1
 
 
 
@@ -49,6 +53,7 @@ class Kabi:
         if self.current_speed < 0:
             self.act_state = Kabi.FALL_STATE
         self.current_speed = -1
+
 
 
     def handle_jump(self, frame_time):
@@ -93,6 +98,8 @@ class Kabi:
         self.x, self.y = 400, 50
         self.gravity = 0
         self.current_speed = 0
+
+        self.fly_gauge = 100
 
     handle_state = {
         STAND_STATE : handle_stand,
@@ -173,6 +180,8 @@ class Kabi:
 
         self.handle_state[self.act_state](self, frame_time)
 
+        self.gauge_ctrl(frame_time)
+
 
     def draw(self):
         if(self.save_direction == self.LEFT):
@@ -217,7 +226,7 @@ class Kabi:
             self.act_state = Kabi.WALK_STATE
 
     def change_field(self,frame_time):
-        distance = Kabi.RUN_SPEED_PPS * frame_time
+        distance = Kabi.SCROLL_SPEED_PPS * frame_time
         if self.up_down == True:
             self.y += distance
             if self.y > 600:
@@ -233,4 +242,15 @@ class Kabi:
     def death(self):
         #game_framework.push_state(title_state)
         pass
+
+    def gauge_ctrl(self, frame_time):
+        if self.act_state == Kabi.FLY_STATE:
+            self.fly_gauge -= frame_time * 50
+            if self.fly_gauge < 0:
+                self.act_state = Kabi.FALL_STATE
+        else:
+            if self.fly_gauge < 100:
+                self.fly_gauge += frame_time * 25
+        print('%d'% self.fly_gauge)
+
 

@@ -41,7 +41,7 @@ class Cloud:
 
 
     def get_bb(self):
-        return self.x - Cloud.image.w / 2, self.y - Cloud.image.h / 2 , self.x + Cloud.image.w / 2, self.y
+        return self.x - Cloud.image.w / 2 + 25 , self.y - Cloud.image.h / 2 , self.x + Cloud.image.w / 2 - 25, self.y
 
     def change_cloud(self):
         self.cloud_state = Cloud.AFT_COL
