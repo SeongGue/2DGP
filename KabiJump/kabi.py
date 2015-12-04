@@ -239,6 +239,7 @@ class Kabi:
             self.x -= distance
         if self.x < 200:
             self.x += distance
+
     def death(self):
         game_framework.push_state(title_state)
         pass

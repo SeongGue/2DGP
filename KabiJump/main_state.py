@@ -140,20 +140,27 @@ def update(frame_time):
 
         for ball in balls:
             if collide(kabi,ball):
-                ball.stop()
-                kabi.death()
-                score = 0
-                save_time = get_time()
+                if shield.shield_num == 0:
+                    kabi.death()
+                    score = 0
+                    save_time = get_time()
+                else:
+                    ball.y = 0
+                    shield.shield_num -= 1
 
         for cloud in clouds:
             if cloud.cloud_state == cloud.AFT_COL:
                 CHECK_COL_CLOUD += 1
 
+        ui.update(frame_time, score + kabi.y, save_time)
+        shield.update(frame_time)
+
+        if collide(kabi, shield):
+            shield.eat_shield()
+
         COL_CLOUDS = CHECK_COL_CLOUD
         CHECK_COL_CLOUD = 0
 
-        ui.update(frame_time, score + kabi.y, save_time)
-        shield.update(frame_time)
 
 
 
