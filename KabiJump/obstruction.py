@@ -12,7 +12,7 @@ class BigBall():
 
     image = None
     def __init__(self):
-        self.x, self.y = random.randint(100, 700), random.randint(600, 1500)
+        self.x, self.y = random.randint(100, 700), random.randint(600, 1200)
         self.fall_speed = random.randint(0, 20)
         if BigBall.image == None:
             #BigBall.image = load_image('resource\\image\\ball41x41.png')

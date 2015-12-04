@@ -240,7 +240,7 @@ class Kabi:
         if self.x < 200:
             self.x += distance
     def death(self):
-        #game_framework.push_state(title_state)
+        game_framework.push_state(title_state)
         pass
 
     def gauge_ctrl(self, frame_time):

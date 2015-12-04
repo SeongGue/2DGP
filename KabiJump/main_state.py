@@ -8,6 +8,7 @@ from cloud import Cloud
 from background import Background, Grass
 from obstruction import BigBall
 from ui import Ui
+from item import Shield
 
 name = "MainState"
 
@@ -18,6 +19,7 @@ background = None
 balls = None
 grass = None
 ui = None
+shield = None
 
 OFF, ON = 0, 1
 
@@ -25,13 +27,14 @@ change_field = OFF
 
 COL_CLOUDS = 0
 CHECK_COL_CLOUD = 0
-
+##점수 관련 변수
 score = 0
 save_score = 0
+save_time = 0
 
 
 def create_world():
-    global kabi, clouds, background, balls, grass, top_grass, ui
+    global kabi, clouds, background, balls, grass, top_grass, ui, shield
     kabi = Kabi()
     clouds = [Cloud(0) for i in range(10)]
     background = Background(800, 1064)
@@ -39,18 +42,22 @@ def create_world():
     grass = Grass(400, 0)
     top_grass = Grass(400, 600)
     ui = Ui()
+    shield = Shield()
 
 
 def destroy_world():
-    global kabi, clouds, background, balls, grass, top_grass, ui
+    global kabi, clouds, background, balls, grass, top_grass, ui, shield
 
     del(kabi)
-    clouds.clear()
+    #clouds.clear()
     del(background)
-    balls.clear()
+    #balls.clear()
+    del(clouds)
+    del(balls)
     del(grass)
     del(top_grass)
     del(ui)
+    del(shield)
 
 
 def enter():
@@ -82,7 +89,7 @@ def handle_events(frame_time):
             kabi.handle_event(event)
 
 def update(frame_time):
-    global change_field, COL_CLOUDS, CHECK_COL_CLOUD, save_score, score
+    global change_field, COL_CLOUDS, CHECK_COL_CLOUD, save_score, score, save_time
 
     if collide(kabi, top_grass):
         if COL_CLOUDS == 10:
@@ -135,6 +142,8 @@ def update(frame_time):
             if collide(kabi,ball):
                 ball.stop()
                 kabi.death()
+                score = 0
+                save_time = get_time()
 
         for cloud in clouds:
             if cloud.cloud_state == cloud.AFT_COL:
@@ -143,7 +152,8 @@ def update(frame_time):
         COL_CLOUDS = CHECK_COL_CLOUD
         CHECK_COL_CLOUD = 0
 
-        ui.update(frame_time, score + kabi.y)
+        ui.update(frame_time, score + kabi.y, save_time)
+        shield.update(frame_time)
 
 
 
@@ -171,8 +181,10 @@ def draw(frame_time):
 
     ui.draw_font()
     ui.draw_gauge_bar(kabi.x, kabi.y, kabi.gauge_ctrl(frame_time))
+    shield.draw()
 
     update_canvas()
+
 
 def collide(a, b):
     left_a, bottom_a, right_a, top_a = a.get_bb()
