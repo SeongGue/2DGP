@@ -2,7 +2,8 @@ from pico2d import *
 
 import game_framework
 
-import title_state
+#from rank import get_key
+import rank
 
 
 class Kabi:
@@ -241,7 +242,7 @@ class Kabi:
             self.x += distance
 
     def death(self):
-        game_framework.push_state(title_state)
+        game_framework.push_state(rank)
         pass
 
     def gauge_ctrl(self, frame_time):

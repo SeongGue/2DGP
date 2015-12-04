@@ -2,6 +2,8 @@ from pico2d import *
 
 import game_framework
 import title_state
+import rank
+import os
 
 from kabi import Kabi
 from cloud import Cloud
@@ -141,6 +143,7 @@ def update(frame_time):
         for ball in balls:
             if collide(kabi,ball):
                 if shield.shield_num == 0:
+                    record_score()
                     kabi.death()
                     score = 0
                     save_time = get_time()
@@ -202,3 +205,17 @@ def collide(a, b):
     if bottom_a > top_b: return False
     if top_a < bottom_b: return False
     return True
+
+def record_score():
+    global score
+
+    record = {"score":score + kabi.y }
+
+    score_list = []
+    if os.path.exists('score.txt'):
+        with open('score.txt', 'r') as f:
+            score_list = json.load(f)
+
+    score_list.append(record)
+    with open('score.txt', 'w') as f:
+        json.dump(score_list, f)
