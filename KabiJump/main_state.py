@@ -3,6 +3,7 @@ from pico2d import *
 import game_framework
 import title_state
 import os
+import random
 
 from kabi import Kabi
 from cloud import Cloud
@@ -59,6 +60,7 @@ def create_world():
     shield = Shield()
 
 
+
 def destroy_world():
     global player, clouds, background, balls, grass, top_grass, ui, shield, ufos
 
@@ -78,8 +80,8 @@ def enter():
 
 
 def exit():
-    destroy_world()
-    close_canvas()
+    pass
+
 
 
 def pause():
@@ -97,7 +99,7 @@ def handle_events(frame_time):
         if event.type == SDL_QUIT:
             game_framework.quit()
         elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_ESCAPE):
-            game_framework.push_state(title_state)
+            game_framework.change_state(title_state)
         else:
             player.handle_event(event)
 
@@ -117,7 +119,8 @@ def update(frame_time):
                         ufos = [UFO() for i in range((int)(game_level / gen_ball))]
             if game_level > gen_ball:
                 for ufo in ufos:
-                    ufo.y = -30
+                    ufo.x = random.randint(100, 700)
+                    ufo.y = random.randint(300, 500)
 
 
 
@@ -170,6 +173,7 @@ def update(frame_time):
                     save_time = get_time()
                     game_level = 0
                     cloud_model = 0
+                    clouds.clear()
                 else:
                     ball.y = 0
                     shield.shield_num -= 1
@@ -196,6 +200,7 @@ def update(frame_time):
                     save_time = get_time()
                     game_level = 0
                     cloud_model = 0
+                    clouds.clear()
 
             for ufo in ufos:
                 ufo.update(frame_time)

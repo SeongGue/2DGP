@@ -10,10 +10,14 @@ name = "RankingState"
 image = None
 font = None
 
+
+
+
 def enter():
-    global image, font
+    global image, font, level_sound
     image = load_image('resource\\image\\background.png')
     font = load_font('resource\\font\\ConsolaMalgun.ttf', 30)
+
 
 
 def exit():

@@ -105,6 +105,8 @@ class Kabi:
         self.jump_sound = load_wav('resource\\sound\jump.wav')
         self.jump_sound.set_volume(32)
 
+
+
     handle_state = {
         STAND_STATE : handle_stand,
         WALK_STATE : handle_walk,

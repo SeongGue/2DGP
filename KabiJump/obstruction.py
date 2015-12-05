@@ -68,8 +68,6 @@ class UFO:
 
     def update  (self, frame_time):
         self.change_direction()
-        if self.y == -30:
-            self.y = random.randint(300, 500)
 
         if self.direction == UFO.UP_RIGHT:
             self.x += self.speed * frame_time
