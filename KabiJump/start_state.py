@@ -23,7 +23,7 @@ def exit():
 def update(frame_time):
     global logo_time
 
-    if(logo_time > 6.0):
+    if(logo_time > 1.0):
         logo_time = 0
         game_framework.push_state(title_state)
     logo_time += 0.01

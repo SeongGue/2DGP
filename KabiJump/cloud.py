@@ -1,4 +1,6 @@
 import random
+import json
+
 
 from pico2d import *
 
@@ -14,14 +16,15 @@ class Cloud:
     PRE_COL, AFT_COL = 0, 1
 
 
-    def __init__(self, y):
-        self.x, self.y = random.randint(200, 730), y + random.randint(100, 500)
+    def __init__(self):
+        self.x, self.y = 0 , 0
         self.cloud_state = Cloud.PRE_COL
 
         if Cloud.image == None:
             Cloud.image = load_image('resource\\image\\cloud.png')
         if Cloud.collision == None:
             Cloud.collision = load_image('resource\\image\\collision_cloud.png')
+        self.name = 'noname'
 
 
     def update(self, frame_time):
@@ -46,8 +49,35 @@ class Cloud:
     def change_cloud(self):
         self.cloud_state = Cloud.AFT_COL
 
-    def regen(self):
+    def regen(self, x, y):  
         if(self.y <= 0):
-            self.x, self.y = random.randint(200, 730), random.randint(100, 500)
+            self.x, self.y = 0, 0
             self.cloud_state = Cloud.PRE_COL
+
+def  test_cloud():
+    open_canvas()
+
+    cloud_data_file = open('cloud_data.txt', 'r')
+    cloud_data = json.load(cloud_data_file)
+    cloud_data_file.close()
+
+    clouds = []
+    for name in cloud_data:
+        cloud = Cloud()
+        cloud.name = name
+        cloud.x = cloud_data[name]['x']
+        cloud.y = cloud_data[name]['y']
+        clouds.append(cloud)
+    for cloud in clouds:
+        cloud.draw()
+    update_canvas()
+    delay(3)
+    close_canvas()
+
+if __name__ == '__main__':#(7)
+    test_cloud()
+
+
+
+
 

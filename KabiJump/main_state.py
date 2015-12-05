@@ -8,7 +8,7 @@ import os
 from kabi import Kabi
 from cloud import Cloud
 from background import Background, Grass
-from obstruction import BigBall
+from obstruction import BigBall, UFO
 from ui import Ui
 from item import Shield
 
@@ -22,6 +22,7 @@ balls = None
 grass = None
 ui = None
 shield = None
+ufos = None
 
 OFF, ON = 0, 1
 
@@ -33,14 +34,17 @@ CHECK_COL_CLOUD = 0
 score = 0
 save_score = 0
 save_time = 0
+game_level = 0
+
+gen_ball = 3
 
 
 def create_world():
     global kabi, clouds, background, balls, grass, top_grass, ui, shield
     kabi = Kabi()
-    clouds = [Cloud(0) for i in range(10)]
+    clouds = [Cloud(400, 200) for i in range(10)]######################
     background = Background(800, 1064)
-    balls = [BigBall() for i in range (10)]
+    balls = [BigBall() for i in range (5)]
     grass = Grass(400, 0)
     top_grass = Grass(400, 600)
     ui = Ui()
@@ -48,7 +52,7 @@ def create_world():
 
 
 def destroy_world():
-    global kabi, clouds, background, balls, grass, top_grass, ui, shield
+    global kabi, clouds, background, balls, grass, top_grass, ui, shield, ufos
 
     del(kabi)
     #clouds.clear()
@@ -60,6 +64,7 @@ def destroy_world():
     del(top_grass)
     del(ui)
     del(shield)
+    del(ufos)
 
 
 def enter():
@@ -91,7 +96,7 @@ def handle_events(frame_time):
             kabi.handle_event(event)
 
 def update(frame_time):
-    global change_field, COL_CLOUDS, CHECK_COL_CLOUD, save_score, score, save_time
+    global change_field, COL_CLOUDS, CHECK_COL_CLOUD, save_score, score, save_time, game_level, balls, ufos, gen_ball
 
     if collide(kabi, top_grass):
         if COL_CLOUDS == 10:
@@ -99,6 +104,13 @@ def update(frame_time):
             if save_score == 0:
                 score += kabi.y
                 save_score += 1
+                if game_level < 15:
+                    game_level += 1
+                    balls = [BigBall() for i in range(5 + (game_level % 10))]
+                    if game_level % gen_ball == 0:
+                        ufos = [UFO() for i in range((int)(game_level / gen_ball))]
+
+
 
 
     if change_field == ON:
@@ -113,7 +125,7 @@ def update(frame_time):
         if kabi.y < 50:
             change_field = OFF
             for cloud in clouds:
-                cloud.regen()
+                cloud.regen()#############33333
             for ball in balls:
                 ball.regen()
             grass.y = 0
@@ -147,6 +159,7 @@ def update(frame_time):
                     kabi.death()
                     score = 0
                     save_time = get_time()
+                    game_level = 0
                 else:
                     ball.y = 0
                     shield.shield_num -= 1
@@ -163,6 +176,18 @@ def update(frame_time):
 
         COL_CLOUDS = CHECK_COL_CLOUD
         CHECK_COL_CLOUD = 0
+
+        if game_level >= gen_ball:
+            for ufo in ufos:
+                if collide(kabi, ufo):
+                    record_score()
+                    kabi.death()
+                    score = 0
+                    save_time = get_time()
+                    game_level = 0
+
+            for ufo in ufos:
+                ufo.update(frame_time)
 
 
 
@@ -192,6 +217,9 @@ def draw(frame_time):
     ui.draw_font()
     ui.draw_gauge_bar(kabi.x, kabi.y, kabi.gauge_ctrl(frame_time))
     shield.draw()
+    if game_level >= gen_ball:
+        for ufo in ufos:
+            ufo.draw()
 
     update_canvas()
 

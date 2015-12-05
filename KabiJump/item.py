@@ -1,6 +1,7 @@
 from pico2d import *
 import random
 
+
 class Shield:
     PIXEL_PER_METER = (10.0 / 0.3)           # 10 pixel 30 cm
     FALL_SPEED_KMPH = 20.0                    # Km / Hour
@@ -28,14 +29,15 @@ class Shield:
         self.shield_num = 0
         self.gen_time = 0
 
+
     def draw(self):
         self.big_h.draw(self.x, self.y)
         if self.shield_num > 0:
-            self.small_h1.draw(5, 20, self.small_h1.w, self.small_h1.h)
+            self.small_h1.draw(15, 20, self.small_h1.w, self.small_h1.h)
         if self.shield_num > 1:
-            self.small_h1.draw(25, 20, self.small_h2.w, self.small_h2.h)
+            self.small_h1.draw(45, 20, self.small_h2.w, self.small_h2.h)
         if self.shield_num > 2:
-            self.small_h1.draw(45, 20, self.small_h3.w, self.small_h3.h)
+            self.small_h1.draw(75, 20, self.small_h3.w, self.small_h3.h)
 
     def update(self, frame_time):
         self.fall_speed += Shield.FALL_SPEED_PPS * frame_time
@@ -48,7 +50,7 @@ class Shield:
                 self.x, self.y = random.randint(100, 700), 800
                 self.fall_speed = 0
                 self.gen_time = 0
-        print(self.shield_num)
+
 
 
     def eat_shield(self):
