@@ -2,7 +2,6 @@ from pico2d import *
 
 import game_framework
 
-#from rank import get_key
 import rank
 
 
@@ -102,6 +101,10 @@ class Kabi:
 
         self.fly_gauge = 100
 
+
+        self.jump_sound = load_wav('resource\\sound\jump.wav')
+        self.jump_sound.set_volume(32)
+
     handle_state = {
         STAND_STATE : handle_stand,
         WALK_STATE : handle_walk,
@@ -143,6 +146,7 @@ class Kabi:
                 self.act_state = Kabi.FLY_STATE
             else:
                 self.act_state = Kabi.JUMP_STATE
+                self.jump_sound.play()
 
         elif(event.type, event.key) == (SDL_KEYUP, SDLK_SPACE):
             if self.act_state == Kabi.FLY_STATE:

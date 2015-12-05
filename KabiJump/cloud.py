@@ -4,6 +4,9 @@ import json
 
 from pico2d import *
 
+
+clouds = None
+
 class Cloud:
     PIXEL_PER_METER = (10.0 / 0.3)           # 10 pixel 30 cm
     SCROLL_SPEED_KMPH = 30.0                    # Km / Hour
@@ -49,33 +52,8 @@ class Cloud:
     def change_cloud(self):
         self.cloud_state = Cloud.AFT_COL
 
-    def regen(self, x, y):  
-        if(self.y <= 0):
-            self.x, self.y = 0, 0
-            self.cloud_state = Cloud.PRE_COL
 
-def  test_cloud():
-    open_canvas()
 
-    cloud_data_file = open('cloud_data.txt', 'r')
-    cloud_data = json.load(cloud_data_file)
-    cloud_data_file.close()
-
-    clouds = []
-    for name in cloud_data:
-        cloud = Cloud()
-        cloud.name = name
-        cloud.x = cloud_data[name]['x']
-        cloud.y = cloud_data[name]['y']
-        clouds.append(cloud)
-    for cloud in clouds:
-        cloud.draw()
-    update_canvas()
-    delay(3)
-    close_canvas()
-
-if __name__ == '__main__':#(7)
-    test_cloud()
 
 
 

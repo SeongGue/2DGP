@@ -62,12 +62,14 @@ class UFO:
 
         self.speed = UFO.FALL_SPEED_PPS
         if UFO.image == None:
-            UFO.image = load_image('resource\\image\\ball21x21.png')
+            UFO.image = load_image('resource\\image\\ufo.png')
         self.direction = random.randint(0,3)
 
 
     def update  (self, frame_time):
         self.change_direction()
+        if self.y == -30:
+            self.y = random.randint(300, 500)
 
         if self.direction == UFO.UP_RIGHT:
             self.x += self.speed * frame_time
@@ -94,7 +96,7 @@ class UFO:
 
 
     def get_bb(self):
-        return self.x - 10, self.y - 10, self.x + 10, self.y + 10
+        return self.x - UFO.image.w / 2, self.y - UFO.image.h / 2, self.x + UFO.image.w / 2, self.y + UFO.image.h / 2
 
     def change_direction(self):
         if self.x > 775:

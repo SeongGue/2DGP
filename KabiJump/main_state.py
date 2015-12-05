@@ -2,7 +2,6 @@ from pico2d import *
 
 import game_framework
 import title_state
-import rank
 import os
 
 from kabi import Kabi
@@ -14,7 +13,7 @@ from item import Shield
 
 name = "MainState"
 
-kabi = None
+player = None
 clouds = None
 top_clouds = None
 background = None
@@ -23,6 +22,7 @@ grass = None
 ui = None
 shield = None
 ufos = None
+
 
 OFF, ON = 0, 1
 
@@ -38,11 +38,19 @@ game_level = 0
 
 gen_ball = 3
 
+cloud_data_file = open('cloud_data.txt', 'r')
+cloud_data = json.load(cloud_data_file)
+cloud_data_file.close()
+
+cloud_model = 0
+
 
 def create_world():
-    global kabi, clouds, background, balls, grass, top_grass, ui, shield
-    kabi = Kabi()
-    clouds = [Cloud(400, 200) for i in range(10)]######################
+    global player, clouds, background, balls, grass, top_grass, ui, shield, cloud_model
+    player = Kabi()
+    #clouds = cloud_pattern(cloud_model)
+    clouds = cloud_pattern(cloud_model)
+    cloud_model += 1
     background = Background(800, 1064)
     balls = [BigBall() for i in range (5)]
     grass = Grass(400, 0)
@@ -52,12 +60,10 @@ def create_world():
 
 
 def destroy_world():
-    global kabi, clouds, background, balls, grass, top_grass, ui, shield, ufos
+    global player, clouds, background, balls, grass, top_grass, ui, shield, ufos
 
-    del(kabi)
-    #clouds.clear()
+    del(player)
     del(background)
-    #balls.clear()
     del(clouds)
     del(balls)
     del(grass)
@@ -85,7 +91,7 @@ def resume():
 
 
 def handle_events(frame_time):
-    global kabi
+    global player
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
@@ -93,28 +99,31 @@ def handle_events(frame_time):
         elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_ESCAPE):
             game_framework.push_state(title_state)
         else:
-            kabi.handle_event(event)
+            player.handle_event(event)
 
 def update(frame_time):
-    global change_field, COL_CLOUDS, CHECK_COL_CLOUD, save_score, score, save_time, game_level, balls, ufos, gen_ball
+    global change_field, COL_CLOUDS, CHECK_COL_CLOUD, save_score, score, save_time, game_level, balls, ufos, gen_ball, clouds, cloud_model
 
-    if collide(kabi, top_grass):
+    if collide(player, top_grass):
         if COL_CLOUDS == 10:
             change_field = ON
             if save_score == 0:
-                score += kabi.y
+                score += player.y
                 save_score += 1
                 if game_level < 15:
                     game_level += 1
                     balls = [BigBall() for i in range(5 + (game_level % 10))]
                     if game_level % gen_ball == 0:
                         ufos = [UFO() for i in range((int)(game_level / gen_ball))]
+            if game_level > gen_ball:
+                for ufo in ufos:
+                    ufo.y = -30
 
 
 
 
     if change_field == ON:
-        kabi.change_field(frame_time)
+        player.change_field(frame_time)
         grass.change_field(frame_time)
         top_grass.change_field(frame_time)
         background.update(frame_time)
@@ -122,44 +131,45 @@ def update(frame_time):
             ball.y = -25
         for cloud in clouds:
             cloud.update(frame_time)
-        if kabi.y < 50:
+        if player.y < 50:
             change_field = OFF
-            for cloud in clouds:
-                cloud.regen()#############33333
+            clouds = cloud_pattern(cloud_model % 10)
+            cloud_model += 1
             for ball in balls:
                 ball.regen()
             grass.y = 0
             top_grass.y = 600
-            kabi.up_down = True
+            player.up_down = True
             save_score = 0
 
 
     if change_field == OFF:
-        kabi.update(frame_time)
+        player.update(frame_time)
 
-        if collide(kabi, grass):
-            kabi.on_ground(grass.y + grass.image.h / 3)
+        if collide(player, grass):
+            player.on_ground(grass.y + grass.image.h / 3)
 
 
         for cloud in clouds:
-            if collide(kabi,cloud):
+            if collide(player,cloud):
                 cloud.change_cloud()
-                if kabi.y  > cloud.y:
-                    if kabi.current_speed < 0:
-                        if collide(kabi,cloud):
-                            kabi.on_ground(cloud.y)
+                if player.y  > cloud.y:
+                    if player.current_speed < 0:
+                        if collide(player,cloud):
+                            player.on_ground(cloud.y)
 
         for ball in balls:
             ball.update(frame_time)
 
         for ball in balls:
-            if collide(kabi,ball):
+            if collide(player,ball):
                 if shield.shield_num == 0:
                     record_score()
-                    kabi.death()
+                    player.death()
                     score = 0
                     save_time = get_time()
                     game_level = 0
+                    cloud_model = 0
                 else:
                     ball.y = 0
                     shield.shield_num -= 1
@@ -168,10 +178,10 @@ def update(frame_time):
             if cloud.cloud_state == cloud.AFT_COL:
                 CHECK_COL_CLOUD += 1
 
-        ui.update(frame_time, score + kabi.y, save_time)
+        ui.update(frame_time, score + player.y, save_time)
         shield.update(frame_time)
 
-        if collide(kabi, shield):
+        if collide(player, shield):
             shield.eat_shield()
 
         COL_CLOUDS = CHECK_COL_CLOUD
@@ -179,12 +189,13 @@ def update(frame_time):
 
         if game_level >= gen_ball:
             for ufo in ufos:
-                if collide(kabi, ufo):
+                if collide(player, ufo):
                     record_score()
-                    kabi.death()
+                    player.death()
                     score = 0
                     save_time = get_time()
                     game_level = 0
+                    cloud_model = 0
 
             for ufo in ufos:
                 ufo.update(frame_time)
@@ -201,7 +212,7 @@ def draw(frame_time):
         cloud.draw()
         #cloud.draw_bb()
 
-    kabi.draw()
+    player.draw()
     #kabi.draw_bb()
 
     grass.draw()
@@ -215,11 +226,12 @@ def draw(frame_time):
         #ball.draw_bb()
 
     ui.draw_font()
-    ui.draw_gauge_bar(kabi.x, kabi.y, kabi.gauge_ctrl(frame_time))
+    ui.draw_gauge_bar(player.x, player.y, player.gauge_ctrl(frame_time))
     shield.draw()
     if game_level >= gen_ball:
         for ufo in ufos:
             ufo.draw()
+
 
     update_canvas()
 
@@ -237,7 +249,7 @@ def collide(a, b):
 def record_score():
     global score
 
-    record = {"score":score + kabi.y }
+    record = {"score":score + player.y }
 
     score_list = []
     if os.path.exists('score.txt'):
@@ -247,3 +259,29 @@ def record_score():
     score_list.append(record)
     with open('score.txt', 'w') as f:
         json.dump(score_list, f)
+
+def cloud_pattern(pattern_num):
+    model = {
+        0 : 'MODEL 1',
+        1 : 'MODEL 2',
+        2 : 'MODEL 3',
+        3 : 'MODEL 4',
+        4 : 'MODEL 5',
+        5 : 'MODEL 6',
+        6 : 'MODEL 7',
+        7 : 'MODEL 8',
+        8 : 'MODEL 9',
+        9 : 'MODEL 10'
+    }
+
+    cloud_data_file = open('cloud_data.txt', 'r')
+    cloud_data = json.load(cloud_data_file)
+    cloud_data_file.close()
+    clouds = []
+    for name in cloud_data[model[pattern_num]]:
+        cloud = Cloud()
+        cloud.name = name
+        cloud.x = cloud_data[model[pattern_num]][name]['x']
+        cloud.y = cloud_data[model[pattern_num]][name]['y']
+        clouds.append(cloud)
+    return clouds

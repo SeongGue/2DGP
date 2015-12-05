@@ -20,6 +20,7 @@ class Background:
         self.bgm.set_volume(64)
         self.bgm.repeat_play()
 
+
     def update(self, frame_time):
         self.speed_y =  SCROLL_SPEED_PPS
         self.down = (self.down + frame_time * self.speed_y) % self.image.h

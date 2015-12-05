@@ -29,15 +29,18 @@ class Shield:
         self.shield_num = 0
         self.gen_time = 0
 
+        self.item_sound = load_wav('resource\\sound\item.wav')
+        self.item_sound.set_volume(32)
+
 
     def draw(self):
         self.big_h.draw(self.x, self.y)
         if self.shield_num > 0:
-            self.small_h1.draw(15, 20, self.small_h1.w, self.small_h1.h)
+            self.small_h1.draw(20, 20, self.small_h1.w, self.small_h1.h)
         if self.shield_num > 1:
-            self.small_h1.draw(45, 20, self.small_h2.w, self.small_h2.h)
+            self.small_h1.draw(50, 20, self.small_h2.w, self.small_h2.h)
         if self.shield_num > 2:
-            self.small_h1.draw(75, 20, self.small_h3.w, self.small_h3.h)
+            self.small_h1.draw(80, 20, self.small_h3.w, self.small_h3.h)
 
     def update(self, frame_time):
         self.fall_speed += Shield.FALL_SPEED_PPS * frame_time
@@ -57,6 +60,7 @@ class Shield:
         self.y = -30
         if self.shield_num < 3:
             self.shield_num += 1
+        self.item_sound.play()
 
     def draw_bb(self):
         draw_rectangle(*self.get_bb())

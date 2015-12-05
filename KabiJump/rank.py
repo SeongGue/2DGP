@@ -35,7 +35,7 @@ def draw_score():
     top10 = score_list[:10]
     font.draw(320, 550, '[RANKING]', (0,0,0))
     for i, record in enumerate(top10):
-        font.draw(100, 510 - i * 40, '#%2d   (score:%4d)' % (i+1,record['score']), (0,0,0))
+        font.draw(220, 450 - i * 40, '#%2d   (score:%4d)' % (i+1,record['score']), (0,0,0))
 
 
 def draw(frame_time):
