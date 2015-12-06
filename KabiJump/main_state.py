@@ -39,7 +39,7 @@ game_level = 0
 
 gen_ball = 3
 
-cloud_data_file = open('cloud_data.txt', 'r')
+cloud_data_file = open('resource\\txt\\cloud_data.txt', 'r')
 cloud_data = json.load(cloud_data_file)
 cloud_data_file.close()
 
@@ -279,7 +279,7 @@ def cloud_pattern(pattern_num):
         9 : 'MODEL 10'
     }
 
-    cloud_data_file = open('cloud_data.txt', 'r')
+    cloud_data_file = open('resource\\txt\\cloud_data.txt', 'r')
     cloud_data = json.load(cloud_data_file)
     cloud_data_file.close()
     clouds = []

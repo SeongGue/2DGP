@@ -33,7 +33,7 @@ def get_key(item):
     return item['score']
 
 def draw_score():
-    with open('score.txt', 'r') as f:
+    with open('resource\\txt\\score.txt', 'r') as f:
         score_list = json.load(f)
     score_list.sort(key=get_key, reverse = True)
     top10 = score_list[:10]
