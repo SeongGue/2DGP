@@ -112,17 +112,6 @@ def update(frame_time):
             if save_score == 0:
                 score += player.y
                 save_score += 1
-                if game_level < 15:
-                    game_level += 1
-                    balls = [BigBall() for i in range(5 + (game_level % 10))]
-                    if game_level % gen_ball == 0:
-                        ufos = [UFO() for i in range((int)(game_level / gen_ball))]
-            if game_level > gen_ball:
-                for ufo in ufos:
-                    ufo.x = random.randint(100, 700)
-                    ufo.y = random.randint(300, 500)
-
-
 
 
     if change_field == ON:
@@ -131,9 +120,13 @@ def update(frame_time):
         top_grass.change_field(frame_time)
         background.update(frame_time)
         for ball in balls:
-            ball.y = -25
+            ball.y = -30
         for cloud in clouds:
             cloud.update(frame_time)
+        if game_level >= gen_ball: ########처음 나오는거 없애줘야함
+            for ufo in ufos:
+                ufo.y = -30
+        shield.y = -30
         if player.y < 50:
             change_field = OFF
             clouds = cloud_pattern(cloud_model % 10)
@@ -144,6 +137,16 @@ def update(frame_time):
             top_grass.y = 600
             player.up_down = True
             save_score = 0
+            if game_level < 15:
+                    game_level += 1
+                    balls.clear()
+                    balls = [BigBall() for i in range(5 + (game_level % 10))]
+                    if game_level % gen_ball == 0:
+                        ufos = [UFO() for i in range((int)(game_level / gen_ball))]
+            if game_level > gen_ball:
+                for ufo in ufos:
+                    ufo.x = random.randint(100, 700)
+                    ufo.y = random.randint(300, 500)
 
 
     if change_field == OFF:
@@ -236,6 +239,7 @@ def draw(frame_time):
     if game_level >= gen_ball:
         for ufo in ufos:
             ufo.draw()
+            ufo.draw_bb()
 
 
     update_canvas()

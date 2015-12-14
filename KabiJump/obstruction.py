@@ -94,7 +94,7 @@ class UFO:
 
 
     def get_bb(self):
-        return self.x - UFO.image.w / 2, self.y - UFO.image.h / 2, self.x + UFO.image.w / 2, self.y + UFO.image.h / 2
+        return self.x - (UFO.image.w / 2 - 5), self.y - (UFO.image.h / 2 - 5), self.x + (UFO.image.w / 2 - 5), self.y + (UFO.image.h / 2 - 5)
 
     def change_direction(self):
         if self.x > 775:
